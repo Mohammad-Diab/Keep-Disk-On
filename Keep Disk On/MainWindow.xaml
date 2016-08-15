@@ -1,0 +1,30 @@
+﻿<Window x:Class="Keep_Disk_On.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Keep_Disk_On"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="300" Width="450" FontSize="16" Loaded="Window_Loaded" Closing="Window_Closing" ResizeMode="CanMinimize">
+    <Grid>
+        <Button x:Name="start_btm" Content="Start" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="160" Height="55" Click="Start_Btm_Click"/>
+        <Button x:Name="stop_btm" Content="Pause" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="160" Height="55" Click="Stop_Btm_Click" IsEnabled="False"/>
+        <ComboBox x:Name="drive_cbx" HorizontalAlignment="Left" Margin="10,75,0,0" VerticalAlignment="Top" Width="315"/>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,49,0,0" TextWrapping="Wrap" Text="Disk List" VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" Margin="10,119,0,0" TextWrapping="Wrap" Text="Update Every" VerticalAlignment="Top"/>
+        <TextBox x:Name="update_tbx" HorizontalAlignment="Left" Height="23" Margin="10,145,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220" TextChanged="Update_Tbx_TextChanged" MaxLines="1" MaxLength="6">
+            <TextBox.ToolTip>
+                <TextBlock>
+                    <Run Text="s = seconds" Foreground="Red"/><LineBreak/>
+                    <Run Text="m = minutes" Foreground="Blue"/><LineBreak/>
+                    <Run Text="h = hours" Foreground="Green"/><LineBreak/>
+                    <Run Text="d = days" Foreground="Orange"/>
+                </TextBlock>
+            </TextBox.ToolTip>
+        </TextBox>
+        <TextBlock x:Name="secound_count_tbx" HorizontalAlignment="Left" Margin="235,147,0,0" TextWrapping="Wrap" Text="= 60 seconds" VerticalAlignment="Top"/>
+        <Button x:Name="refresh_btm" Content="Refresh" HorizontalAlignment="Left" Margin="330,76,0,0" VerticalAlignment="Top" Width="35" Click="Refresh_Btm_Click"/>
+        <TextBlock x:Name="textBlock_Copy2" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" FontSize="28" Foreground="Violet" Text="Keep It On" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>
