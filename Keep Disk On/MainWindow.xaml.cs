@@ -149,6 +149,11 @@ namespace Keep_Disk_On
         {
             if (drive_cbx.SelectedIndex > -1)
             {
+                if (deley <= 0)
+                {
+                    MessageBox.Show("Invalid update period\nuse 1 second to 1 day, for example 30s, 1m or 1.5h");
+                    return;
+                }
                 drive_cbx.IsEnabled = refresh_btm.IsEnabled = update_tbx.IsEnabled = start_btm.IsEnabled = false;
                 stop_btm.IsEnabled = true;
                 if (pause == null)
