@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,7 @@ namespace Keep_Disk_On
             InitializeComponent();
         }
 
-        int deley = 1000;
+        int deley = 60000;
         bool? pause = null;
         bool stop = false;
 
@@ -122,8 +123,9 @@ namespace Keep_Disk_On
                 }
             }
             double xx;
-            double.TryParse(x, out xx);
+            double.TryParse(x, NumberStyles.Float, CultureInfo.InvariantCulture, out xx);
             xx *= multi;
+            deley = 0;
             if (i < update_tbx.Text.Length - 1)
                 secound_count_tbx.Text = "Invalid input";
             else
@@ -134,7 +136,10 @@ namespace Keep_Disk_On
                     else if (xx < 1)
                         secound_count_tbx.Text = "Too short period.";
                     else
+                    {
                         secound_count_tbx.Text = " = " + xx + " second" + (xx == 1 ? "" : "s");
+                        deley = (int)(xx * 1000);
+                    }
                 else
                     secound_count_tbx.Text = "Invalid input";
             }
