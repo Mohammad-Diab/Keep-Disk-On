@@ -7,7 +7,7 @@ A small Windows tool that keeps a USB flash drive or an external hard disk awake
 - Lists the ready disks (fixed, removable and RAM disks); the **Refresh** button reads the list again.
 - **Start** creates a hidden file with a random name in the root of the selected disk and writes 1 MB to it again and again, so the disk never stays idle.
 - **Update Every** sets how often it writes: a number followed by `s`, `m`, `h` or `d` (seconds, minutes, hours, days), for example `30s`, `1m` or `1.5h`. The default is `1m`. The text next to it shows the period in seconds; it can be from 1 second to 1 day.
-- **Pause** stops writing; **Start** goes on again.
+- **Stop** stops writing, deletes the hidden file and lets you pick another disk or period.
 - Closing the app stops writing and deletes the hidden file.
 
 ## Requirements

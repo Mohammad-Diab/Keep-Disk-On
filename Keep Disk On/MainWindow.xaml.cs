@@ -29,8 +29,9 @@ namespace Keep_Disk_On
         }
 
         int deley = 60000;
-        bool? pause = null;
         bool stop = false;
+        AutoResetEvent wake = new AutoResetEvent(false);
+        BackgroundWorker worker;
 
         FileInfo file;
 
@@ -156,67 +157,69 @@ namespace Keep_Disk_On
                 }
                 drive_cbx.IsEnabled = refresh_btm.IsEnabled = update_tbx.IsEnabled = start_btm.IsEnabled = false;
                 stop_btm.IsEnabled = true;
-                if (pause == null)
+                BinaryWriter BW;
+                try
                 {
-                    BinaryWriter BW;
+                    string file_name = GetFileName((drive_cbx.SelectedItem as ComboBoxItem).Content.ToString());
+                    BW = new BinaryWriter(File.Create(file_name));
+                    file = new FileInfo(file_name);
+                    file.Attributes = (FileAttributes)6;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error\n" + ex.Message);
+                    return;
+                }
+                stop = false;
+                wake.Reset();
+                worker = new BackgroundWorker();
+
+                worker.DoWork += (object bw_sender, DoWorkEventArgs args) =>
+                {
+                    byte[] block = new byte[1048576];
+                    Random r = new Random();
+                    for (int i = 0; i < block.Length; i++)
+                        block[i] = (byte)r.Next(0, 255);
+                    while (!stop)
+                    {
+                        if (BW != null)
+                        {
+                            try
+                            {
+                                for (int i = 0; i < block.Length - 1; i += 32768)
+                                    BW.Write(block, i, 32768);
+                            }
+                            catch (Exception) { }
+                            BW.BaseStream.Position = 0;
+                        }
+                        wake.WaitOne(deley);
+                    }
                     try
                     {
-                        string file_name = GetFileName((drive_cbx.SelectedItem as ComboBoxItem).Content.ToString());
-                        BW = new BinaryWriter(File.Create(file_name));
-                        file = new FileInfo(file_name);
-                        file.Attributes = (FileAttributes)6;
+                        BW.Close();
+                        file.Delete();
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Error\n" + ex.Message);
-                        return;
-                    }
-                    BackgroundWorker bw = new BackgroundWorker();
-                    bw.WorkerReportsProgress = true;
+                    catch (Exception) { }
+                };
+                worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
 
-                    bw.DoWork += (object bw_sender, DoWorkEventArgs args) =>
-                    {
-                        byte[] block = new byte[1048576];
-                        Random r = new Random();
-                        for (int i = 0; i < block.Length; i++)
-                            block[i] = (byte)r.Next(0, 255);
-                        while (!stop)
-                        {
-                            if (BW != null)
-                            {
-                                try
-                                {
-                                    for (int i = 0; i < block.Length - 1; i += 32768)
-                                        BW.Write(block, i, 32768);
-                                }
-                                catch (Exception) { }
-                                BW.BaseStream.Position = 0;
-                            }
-                            Thread.Sleep(deley);
-                            while (pause == true && !stop)
-                                Thread.Sleep(5000);
-                        }
-                        try
-                        {
-                            BW.Close();
-                            file.Delete();
-                        }
-                        catch (Exception) { }
-                    };
-
-                    bw.RunWorkerAsync();
-                }
-                else
-                    pause = false;
+                worker.RunWorkerAsync();
             }
             else MessageBox.Show("select disk drive first");
         }
 
+        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            worker = null;
+            drive_cbx.IsEnabled = refresh_btm.IsEnabled = update_tbx.IsEnabled = start_btm.IsEnabled = true;
+            stop_btm.IsEnabled = false;
+        }
+
         private void Stop_Btm_Click(object sender, RoutedEventArgs e)
         {
-            start_btm.IsEnabled = true;
             stop_btm.IsEnabled = false;
-            pause = true;
+            stop = true;
+            wake.Set();
         }
 
         private string GetFileName(string v)
