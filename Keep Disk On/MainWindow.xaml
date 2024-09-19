@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Keep_Disk_On"
         mc:Ignorable="d"
-        Title="MainWindow" Height="300" Width="450" FontSize="16" Loaded="Window_Loaded" Closing="Window_Closing" ResizeMode="CanMinimize">
+        Title="Keep Disk On" Height="300" Width="450" FontSize="16" Loaded="Window_Loaded" Closing="Window_Closing" ResizeMode="CanMinimize">
     <Grid>
         <Button x:Name="start_btm" Content="Start" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="160" Height="55" Click="Start_Btm_Click"/>
         <Button x:Name="stop_btm" Content="Stop" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="160" Height="55" Click="Stop_Btm_Click" IsEnabled="False"/>
@@ -23,7 +23,7 @@
             </TextBox.ToolTip>
         </TextBox>
         <TextBlock x:Name="secound_count_tbx" HorizontalAlignment="Left" Margin="235,147,0,0" TextWrapping="Wrap" Text="= 60 seconds" VerticalAlignment="Top"/>
-        <Button x:Name="refresh_btm" Content="Refresh" HorizontalAlignment="Left" Margin="330,76,0,0" VerticalAlignment="Top" Width="35" Click="Refresh_Btm_Click"/>
+        <Button x:Name="refresh_btm" Content="Refresh" HorizontalAlignment="Left" Margin="330,75,0,0" VerticalAlignment="Top" Width="94" Click="Refresh_Btm_Click"/>
         <TextBlock x:Name="textBlock_Copy2" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" FontSize="28" Foreground="Violet" Text="Keep It On" VerticalAlignment="Top"/>
 
     </Grid>
