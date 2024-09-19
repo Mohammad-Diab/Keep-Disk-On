@@ -192,26 +192,29 @@ namespace Keep_Disk_On
                     Random r = new Random();
                     for (int i = 0; i < block.Length; i++)
                         block[i] = (byte)r.Next(0, 255);
-                    while (!stop)
-                    {
-                        if (BW != null)
-                        {
-                            try
-                            {
-                                for (int i = 0; i < block.Length - 1; i += 32768)
-                                    BW.Write(block, i, 32768);
-                            }
-                            catch (Exception) { }
-                            BW.BaseStream.Position = 0;
-                        }
-                        wake.WaitOne(deley);
-                    }
                     try
                     {
-                        BW.Close();
-                        file.Delete();
+                        while (!stop)
+                        {
+                            for (int i = 0; i < block.Length - 1; i += 32768)
+                                BW.Write(block, i, 32768);
+                            BW.BaseStream.Position = 0;
+                            wake.WaitOne(deley);
+                        }
                     }
-                    catch (Exception) { }
+                    finally
+                    {
+                        try
+                        {
+                            BW.Close();
+                        }
+                        catch (Exception) { }
+                        try
+                        {
+                            file.Delete();
+                        }
+                        catch (Exception) { }
+                    }
                 };
                 worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
 
@@ -228,6 +231,8 @@ namespace Keep_Disk_On
                 Close();
                 return;
             }
+            if (e.Error != null)
+                MessageBox.Show("Error\n" + e.Error.Message);
             drive_cbx.IsEnabled = refresh_btm.IsEnabled = update_tbx.IsEnabled = start_btm.IsEnabled = true;
             stop_btm.IsEnabled = false;
         }
