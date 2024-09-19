@@ -26,12 +26,14 @@ namespace Keep_Disk_On
         public MainWindow()
         {
             InitializeComponent();
+            Application.Current.SessionEnding += App_SessionEnding;
         }
 
         int deley = 60000;
         bool stop = false;
         bool closing = false;
         AutoResetEvent wake = new AutoResetEvent(false);
+        ManualResetEvent done = new ManualResetEvent(true);
         BackgroundWorker worker;
 
         FileInfo file;
@@ -184,6 +186,7 @@ namespace Keep_Disk_On
                 }
                 stop = false;
                 wake.Reset();
+                done.Reset();
                 worker = new BackgroundWorker();
 
                 worker.DoWork += (object bw_sender, DoWorkEventArgs args) =>
@@ -216,6 +219,7 @@ namespace Keep_Disk_On
                             file.Delete();
                         }
                         catch (Exception) { }
+                        done.Set();
                     }
                 };
                 worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
@@ -261,6 +265,13 @@ namespace Keep_Disk_On
                 stop = true;
                 wake.Set();
             }
+        }
+
+        private void App_SessionEnding(object sender, SessionEndingCancelEventArgs e)
+        {
+            stop = true;
+            wake.Set();
+            done.WaitOne(10000);
         }
 
     }
