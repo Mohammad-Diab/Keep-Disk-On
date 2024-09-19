@@ -158,7 +158,8 @@ namespace Keep_Disk_On
                 }
                 drive_cbx.IsEnabled = refresh_btm.IsEnabled = update_tbx.IsEnabled = start_btm.IsEnabled = false;
                 stop_btm.IsEnabled = true;
-                BinaryWriter BW;
+                BinaryWriter BW = null;
+                file = null;
                 try
                 {
                     string file_name = GetFileName((drive_cbx.SelectedItem as ComboBoxItem).Content.ToString());
@@ -168,7 +169,17 @@ namespace Keep_Disk_On
                 }
                 catch (Exception ex)
                 {
+                    try
+                    {
+                        if (BW != null)
+                            BW.Close();
+                        if (file != null)
+                            file.Delete();
+                    }
+                    catch (Exception) { }
                     MessageBox.Show("Error\n" + ex.Message);
+                    drive_cbx.IsEnabled = refresh_btm.IsEnabled = update_tbx.IsEnabled = start_btm.IsEnabled = true;
+                    stop_btm.IsEnabled = false;
                     return;
                 }
                 stop = false;
