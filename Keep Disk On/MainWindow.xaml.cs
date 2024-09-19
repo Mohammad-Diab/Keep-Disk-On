@@ -163,7 +163,7 @@ namespace Keep_Disk_On
                 try
                 {
                     string file_name = GetFileName((drive_cbx.SelectedItem as ComboBoxItem).Content.ToString());
-                    BW = new BinaryWriter(File.Create(file_name));
+                    BW = new BinaryWriter(File.Create(file_name, 4096, FileOptions.WriteThrough));
                     file = new FileInfo(file_name);
                     file.Attributes = (FileAttributes)6;
                 }
@@ -198,6 +198,8 @@ namespace Keep_Disk_On
                         {
                             for (int i = 0; i < block.Length - 1; i += 32768)
                                 BW.Write(block, i, 32768);
+                            BW.Flush();
+                            (BW.BaseStream as FileStream).Flush(true);
                             BW.BaseStream.Position = 0;
                             wake.WaitOne(deley);
                         }
