@@ -30,6 +30,7 @@ namespace Keep_Disk_On
 
         int deley = 60000;
         bool stop = false;
+        bool closing = false;
         AutoResetEvent wake = new AutoResetEvent(false);
         BackgroundWorker worker;
 
@@ -211,6 +212,11 @@ namespace Keep_Disk_On
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             worker = null;
+            if (closing)
+            {
+                Close();
+                return;
+            }
             drive_cbx.IsEnabled = refresh_btm.IsEnabled = update_tbx.IsEnabled = start_btm.IsEnabled = true;
             stop_btm.IsEnabled = false;
         }
@@ -229,7 +235,14 @@ namespace Keep_Disk_On
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            stop = true;
+            if (worker != null)
+            {
+                e.Cancel = true;
+                closing = true;
+                stop_btm.IsEnabled = false;
+                stop = true;
+                wake.Set();
+            }
         }
 
     }
